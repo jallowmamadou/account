@@ -1,0 +1,8 @@
+$accounts->rent->pay(array $array)
+
+// we need a public class that calls all the capabilities of accounting like
+rent and salaries and expensis
+
+// there should be a class for the accountants functions like add and deleting and finding a payment (abstract)
+
+//
