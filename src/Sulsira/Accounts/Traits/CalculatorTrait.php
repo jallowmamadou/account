@@ -77,4 +77,27 @@ trait CalculatorTrait {
 
         return $next_pay_date ;
     }
+    public function unix_flip($date, $unix = false, $character = '/'){
+        $set = [];
+        $new_date = '';
+        if(str_contains($date, '/')){
+            $set = preg_split("[/]", $date);
+            if(count($set) < 3){
+                return $date;
+            }
+        }elseif(str_contains($date, '-')){
+            $set = preg_split("[-]", $date);
+        }
+
+        if(!empty($set)){
+            if($unix){
+                // year / month / day
+                $new_date = $set[2].$character.$set[0].$character.$set[1];
+            }else{
+                $new_date = $set[0].$character.$set[1].$character.$set[2];
+            }
+
+        }
+        return  $new_date;
+    }
 } 

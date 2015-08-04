@@ -17,9 +17,6 @@ class Mortgage extends AbstractAccounts{
     public $dataset;
     protected $process;
     function __construct($args = null){
-//        $this->dataset = static::$input;
-
-//        var_dump($this->dataset);
     }
 
     // get the total ammount paid
