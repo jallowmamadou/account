@@ -14,5 +14,4 @@ defined('DS') ? NULL :define('DS',DIRECTORY_SEPARATOR);
 abstract class AbstractAccounts {
     use Traits\CalculatorTrait;
 
-
 } 

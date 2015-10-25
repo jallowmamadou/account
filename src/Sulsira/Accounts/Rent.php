@@ -16,6 +16,16 @@ class Rent extends AbstractAccounts{
 
     function __construct($args = null){
 
+
+    }
+
+    public function firstPayment()
+    {
+        return new FirstRentPayment();
+    }
+
+    public function monthly(){
+        return new Morthly();;
     }
     /*
      *
@@ -67,15 +77,13 @@ class Rent extends AbstractAccounts{
 
     protected function getOwingMonths(array $dates){
 
-
-        $date1 = new \DateTime($dates[0]);
-        $date2 = new \DateTime($dates[1]);
+        $date1 = ((boolean)$dates[0])? new \DateTime( $this->unix_flip($dates[0], true) ) : new \DateTime( '0-0-0000' );
+        $date2 = ((boolean)$dates[1])?  new \DateTime( $this->unix_flip($dates[1], true) ) : new \DateTime( '0-0-0000' );
         if($date1 >  $date2){
+
            return $this->subtract_dates([$dates[0],$dates[1]]);
 
         }else{
-
-
             return 0;
         }
     }
