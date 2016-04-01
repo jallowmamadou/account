@@ -35,6 +35,7 @@ class Rent extends AbstractAccounts{
      *
      */
     public function payment(array $pay){
+
         $results = array();
         $fee = true;
         extract($pay);
@@ -62,7 +63,7 @@ class Rent extends AbstractAccounts{
 
                 $number_of_months_paid = ($money_without_owing_months - $new_balance) / $month_fee;
 
-
+                $previouly_assigned_payment_date = ($previouly_assigned_payment_date == '0000-00-00' or $previouly_assigned_payment_date == null )? $current_payment_date : $previouly_assigned_payment_date;
                 $next_pay_date = $this->add_dates($previouly_assigned_payment_date,$number_of_months_paid);
 
                 $owing_months = $this->getOwingMonths([$current_payment_date,$next_pay_date]);
@@ -77,8 +78,8 @@ class Rent extends AbstractAccounts{
 
     protected function getOwingMonths(array $dates){
 
-        $date1 = ((boolean)$dates[0])? new \DateTime( $this->unix_flip($dates[0], true) ) : new \DateTime( '0-0-0000' );
-        $date2 = ((boolean)$dates[1])?  new \DateTime( $this->unix_flip($dates[1], true) ) : new \DateTime( '0-0-0000' );
+        $date1 = ((boolean)$dates[0])? new \DateTime( $this->unix_flip($dates[0],false,'-') ) : new \DateTime( '0-0-0000' );
+        $date2 = ((boolean)$dates[1])?  new \DateTime( $this->unix_flip($dates[1],false,'-') ) : new \DateTime( '0-0-0000' );
         if($date1 >  $date2){
 
            return $this->subtract_dates([$dates[0],$dates[1]]);

@@ -47,7 +47,6 @@ private  $default_payment_duration_in_months = 36;
 
     // next pay date
     public function getNextPayDate(){
-
        if(! $this->getMonthsPayable()){
            return  $this->dataset['commencement_date'];
        }
@@ -176,8 +175,8 @@ private  $default_payment_duration_in_months = 36;
             'balance' => $this->getBalanceOwed(),
             'total_paid' => $this->getTotalAmountPaid(),
             "payment_due" => $this->getDuePaymentAmount(),
-            "dateOfPayment"=> $this->unix_flip($this->dataset['paid_date'], true, '-'),
-            'paymentCommencementDate'=>$this->unix_flip($this->dataset['commencement_date'], true, '-')
+            "dateOfPayment"=> $this->dataset['paid_date'],
+            'paymentCommencementDate'=>$this->dataset['commencement_date']
 
         ];
     }

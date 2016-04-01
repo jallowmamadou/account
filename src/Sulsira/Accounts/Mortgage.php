@@ -33,23 +33,46 @@ class Mortgage extends AbstractAccounts{
         return ($this->dataset['plot_price'] - $this->dataset['down_payment']) / $this->dataset['payment_duration_in_months'];
 
     }
+
+    public function chargableAmount()
+    {
+        return ( ( $this->dataset['amount_paid'] + $this->dataset['balance'] ) - $this->dataset['arrears'] );
+    }
+    public function payableBalance()
+    {
+        return $this->chargableAmount() %  $this->calculatedMonthlyPaymentFee();
+    }
+    public function amountPayble()
+    {
+       return $this->chargableAmount() - $this->payableBalance();
+        // this is adding the total amount he paid
+        // pluss his previous over payment
+        //minus his owing
+//        return
+    }
     public function getAmountPaid(){
-        return $this->dataset['amount_paid'];
+
+        return $this->dataset['amount_paid'] ;
     }
 
     // number of months payable
     public function getMonthsPayable(){
+//        dd( $this->amountPayble());
         // amount paid / calculated_monthly_fee
 
        // ( amount paid - (amount paid % calculated monthly fee)) / calculated monthly fee;
-       return ( $this->getAmountPaid() - ( $this->getAmountPaid() % $this->calculatedMonthlyPaymentFee())) / $this->calculatedMonthlyPaymentFee();
+       return ceil($this->amountPayble() / $this->calculatedMonthlyPaymentFee());
     }
 
     // next pay date
     public function getNextPayDate(){
 
+        // if the last payment date was not then take the payment
         // the last paid next paid date + ( number of months paid )
        $next_payment_date = (! $this->dataset['next_payment_date'] )? $this->dataset['commencement_date'] : $this->dataset['next_payment_date'];
+
+
+
        return $this->add_dates($next_payment_date, $this->getMonthsPayable());
 
     }
@@ -128,6 +151,7 @@ class Mortgage extends AbstractAccounts{
     }
 
     public function getPayment($args = []){
+
         return [
             'next_payment_date'  =>  $this->getNextPayDate(),
             'calculated_monthly_fee' => $this->calculatedMonthlyPaymentFee(),
@@ -136,14 +160,26 @@ class Mortgage extends AbstractAccounts{
             'arrears' => $this->getBalanceOwing(),
             'balance' => $this->getBalanceOwed(),
             'total_paid' => $this->getTotalAmountPaid(),
-            "payment_due" => $this->getDuePaymentAmount()
+            "total_due_paid" => $this->total_due_paid()
 
         ];
     }
 
+    /**
+     * calculates the amount of money paid for the due payment
+     *
+     * @return float
+     */
+    public function total_due_paid()
+    {
+        return $this->dataset['total_due_paid'] +  $this-> amountPayble();
+    }
     protected function getTotalAmountPaid(){
         // ( balance + down_payment + total_paid + amount_paid ) - arrears
+        if((int)$this->dataset['total_paid']){
 
+            return ($this->chargableAmount() +  $this->dataset['total_paid'] );
+        }
        return ($this->dataset['balance'] +  $this->dataset['down_payment'] + $this->dataset['total_paid'] + $this->dataset['amount_paid']) - $this->dataset['arrears'];
     }
 
@@ -161,4 +197,9 @@ class Mortgage extends AbstractAccounts{
     // calculate the owned
 
     //recalculation and knowing of new closing date
+    /**
+     * unhinded closing date is wrong
+     *
+     *
+     */
 } 
